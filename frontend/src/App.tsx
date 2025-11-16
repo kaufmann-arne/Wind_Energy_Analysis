@@ -14,82 +14,78 @@ function App() {
     console.log({ latitude, longitude, turbines, turbineType });
   };
 
-  return (
-    <div className="flex h-screen">
-      <aside className="w-80 bg-gray-100 p-6 border-r border-gray-300">
-        <h1 className="text-2xl font-bold mb-6">Wind Simulator</h1>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block mb-1 font-medium">Latitude</label>
-            <input
-              type="number"
-              step="0.00001"
-              value={latitude}
-              onChange={(e) => setLatitude(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
+return (
+  <div className="relative h-screen w-screen overflow-hidden">
 
-          <div>
-            <label className="block mb-1 font-medium">Longitude</label>
-            <input
-              type="number"
-              step="0.00001"
-              value={longitude}
-              onChange={(e) => setLongitude(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Number of Turbines</label>
-            <input
-              type="number"
-              min={0}
-              value={turbines}
-              onChange={(e) => setTurbines(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
+    {/* MAP */}
+    <MapView
+      latitude={latitude}
+      longitude={longitude}
+      setLatitude={setLatitude}
+      setLongitude={setLongitude}
+    />
 
-          <div>
-            <label className="block mb-1 font-medium">Turbine Type</label>
-            <select
-              value={turbineType}
-              onChange={(e) => setTurbineType(e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="Type A">Type A</option>
-              <option value="Type B">Type B</option>
-              <option value="Type C">Type C</option>
-            </select>
-          </div>
+    {/* FLOATING SIDEBAR */}
+    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md shadow-xl rounded-xl p-6 w-80 z-[1000] border space-y-4">
+      <h2 className="text-xl font-semibold">Settings</h2>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
-            Calculate
-          </button>
-        </form>
+      {/* Lat / Lng */}
+      <div>
+        <label className="text-sm font-medium">Latitude</label>
+        <input
+          type="number"
+          value={latitude}
+          onChange={(e) => setLatitude(parseFloat(e.target.value))}
+          className="w-full p-2 border rounded"
+        />
+      </div>
 
-        <div className="mt-6 text-sm text-gray-600">
-          <p>Click on the map to pick a location.</p>
-        </div>
-      </aside>
+      <div>
+        <label className="text-sm font-medium">Longitude</label>
+        <input
+          type="number"
+          value={longitude}
+          onChange={(e) => setLongitude(parseFloat(e.target.value))}
+          className="w-full p-2 border rounded"
+        />
+      </div>
 
-      <main className="flex-1 bg-gray-50 p-6">
-        <div className="w-full h-full border-2 border-gray-300 rounded overflow-hidden">
-          <MapView
-            latitude={latitude}
-            longitude={longitude}
-            setLatitude={setLatitude}
-            setLongitude={setLongitude}
-          />
-        </div>
-      </main>
+      {/* Turbine Count */}
+      <div>
+        <label className="text-sm font-medium">Number of Turbines</label>
+        <input
+          type="number"
+          min={1}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      {/* Turbine Type */}
+      <div>
+        <label className="text-sm font-medium">Turbine Model</label>
+        <select className="w-full p-2 border rounded">
+          <option>Vestas V100</option>
+          <option>Vestas V136</option>
+          <option>GE 1.5sle</option>
+          <option>Siemens SWT-3.6</option>
+        </select>
+      </div>
+
+      {/* Placeholder for future */}
+      <div>
+        <label className="text-sm font-medium">Hub Height (m)</label>
+        <input type="number" className="w-full p-2 border rounded" />
+      </div>
+
+      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">
+        Calculate Wind Output
+      </button>
     </div>
-  );
+  </div>
+);
+
+
 }
 
 export default App;
