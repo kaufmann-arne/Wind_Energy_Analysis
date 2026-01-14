@@ -1,0 +1,16 @@
+bundesland,projects,min_eur_per_kw,max_eur_per_kw,mean_eur_per_kw
+Baden-Wuerttemberg,1,100,100,100
+Bayern,14,13,124,55
+Brandenburg,12,15,72,37
+Bremen,0,,,
+Hessen,12,5,69,21
+Mecklenburg-Vorpommern,2,18,48,33
+Niedersachsen,18,9,69,29
+Nordrhein-Westfalen,6,7,24,17
+Rheinland-Pfalz,17,5,40,15
+Saarland,1,40,40,40
+Sachsen,8,4,41,20
+Sachsen-Anhalt,5,6,69,23
+Schleswig-Holstein,1,5,5,5
+Thueringen,5,5,64,27
+Gesamt,102,4,124,29

@@ -1,0 +1,19 @@
+﻿Alle Werte in ct/kWh;Jan 2016;Feb 2016;Mär 2016;Apr 2016;Mai 2016;Jun 2016;Jul 2016;Aug 2016;Sep 2016;Okt 2016;Nov 2016;Dez 2016
+; ; ; ; ; ; ; ; ; ; ; ; 
+Monatsmittelwert Stundenkontrakte EPEX Spot (MW-EPEX); 2,904; 2,199; 2,431; 2,421; 2,254; 2,769; 2,719; 2,718; 3,049; 3,713; 3,822; 3,748
+; ; ; ; ; ; ; ; ; ; ; ; 
+MW Wind Onshore; 2,407; 1,831; 2,106; 2,325; 1,800; 2,672; 2,391; 2,533; 2,748; 3,403; 3,266; 2,403
+PM Wind Onshore fernsteuerbar; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400
+; ; ; ; ; ; ; ; ; ; ; ; 
+MW Wind Offshore; 2,637; 1,961; 2,138; 2,340; 2,009; 2,687; 2,408; 2,537; 2,806; 3,570; 3,455; 3,111
+PM Wind Offshore fernsteuerbar; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400
+; ; ; ; ; ; ; ; ; ; ; ; 
+MW Solar; 3,224; 2,405; 2,314; 2,344; 1,887; 2,821; 2,670; 2,616; 2,978; 3,763; 4,046; 4,352
+PM Solar fernsteuerbar; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400; 0,400
+; ; ; ; ; ; ; ; ; ; ; ; 
+MW steuerbar; 2,904; 2,199; 2,431; 2,421; 2,254; 2,769; 2,719; 2,718; 3,049; 3,713; 3,822; 3,748
+PM steuerbar; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200; 0,200
+; ; ; ; ; ; ; ; ; ; ; ; 
+Negative Stunden (6H); Nein; Nein; Ja; Nein; Ja; Nein; Nein; Nein; Nein; Nein; Ja; Ja
+Negative Stunden (4H); Nein; Ja; Ja; Nein; Ja; Nein; Nein; Nein; Nein; Nein; Ja; Ja
+Negative Stunden (1H); Ja; Ja; Ja; Nein; Ja; Nein; Ja; Nein; Nein; Nein; Ja; Ja
