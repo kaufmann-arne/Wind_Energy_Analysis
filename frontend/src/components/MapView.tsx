@@ -7,7 +7,10 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 import { ImageOverlay } from "react-leaflet";
-import { createStaticHeatmap } from "../utils/generateStaticHeatmap";
+import { createStaticHeatmap, HEATMAP_BOUNDS } from "../utils/generateStaticHeatmap";
+
+import { useMemo } from "react";
+
 
 
 L.Icon.Default.mergeOptions({
@@ -17,10 +20,11 @@ L.Icon.Default.mergeOptions({
 });
 import type { LatLngTuple } from "leaflet";
 
-const US_BOUNDS: [LatLngTuple, LatLngTuple] = [
-  [47.2701, 5.8663],   // SW  (south-west)
-  [55.0581, 15.0419]  // NE (north-east)
+const DE_BOUNDS: [LatLngTuple, LatLngTuple] = [
+  [47.2701, 5.8663],
+  [55.0581, 15.0419],
 ];
+
 
 type Props = {
   latitude: number;
@@ -55,14 +59,17 @@ export default function MapView({
   setLongitude,
 }: Props) {
 
-  const heatmapUrl = createStaticHeatmap();
+
+  const heatmapUrl = useMemo(() => createStaticHeatmap(), []);
+
 
   return (
     <MapContainer
       center={[latitude, longitude]}
       zoom={6.5}
       minZoom={6.5}                  // ⛔ can't zoom out farther
-      maxBounds={US_BOUNDS}        // ⛔ can't pan outside US
+      maxBounds={DE_BOUNDS}
+       // ⛔ can't pan outside US
       maxBoundsViscosity={1.0}     // strong lock at borders
       scrollWheelZoom={true}
       className="h-screen w-screen" // full page!
@@ -82,11 +89,11 @@ export default function MapView({
         </Popup>
       </Marker>
       {/* Choropleth rectangles */}
-      <ImageOverlay
-  url={heatmapUrl}
-  bounds={US_BOUNDS}
-  opacity={0.7}
-/>
+        <ImageOverlay
+          url={heatmapUrl}
+          bounds={HEATMAP_BOUNDS as any}   // or cast to LatLngBoundsExpression
+          opacity={0.7}
+        />
     </MapContainer>
   );
 }
