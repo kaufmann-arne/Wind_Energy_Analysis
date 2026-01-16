@@ -33,7 +33,7 @@ def root():
 # Allow the Vite dev server to call the API from the browser during development.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"], # allow all origins for testing
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
