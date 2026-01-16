@@ -1,0 +1,5 @@
+# Example: central paths for a local checkout
+project_root: .
+data_raw: data/raw
+processed_scada: data/processed/scada_final
+ml_dir: data/ml

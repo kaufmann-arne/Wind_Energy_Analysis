@@ -1,0 +1,6 @@
+# Example turbine metadata (extend as needed)
+# turbine_id:
+#   lat: 40.58545
+#   lon: 28.99035
+#   hub_height_m: 90
+#   turbine_type: SL_3600/116

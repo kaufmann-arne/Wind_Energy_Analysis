@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+.uv/
+
+# Notebooks / checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data & large artifacts (keep out of git)
+Data/
+LGBM_Model/model_artifacts/
+
+# Local overrides (machine-specific)
+config/paths.local.yaml
+config/paths.*.local.yaml
