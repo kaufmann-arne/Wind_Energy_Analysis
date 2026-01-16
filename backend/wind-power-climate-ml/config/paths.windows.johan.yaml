@@ -1,0 +1,21 @@
+# Example absolute paths for Windows (Johan)
+# Use forward slashes to avoid escaping backslashes.
+
+project_root: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project"
+
+# Raw data roots
+raw_era5_dir: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/Data/Raw/Era5"
+raw_scada_dir: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/Data/Raw/Scada"
+
+# Common processed locations
+processed_scada_dir: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/Data/Processed/Scada_final"
+ml_dir: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/Data/ML"
+
+# Model artifacts produced by training
+model_artifacts_dir: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/LGBM_Model/model_artifacts"
+
+# Explicit artifact file paths (as produced by scripts/train_lgbm_louo.py)
+final_model_pkl: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/LGBM_Model/model_artifacts/final_model.pkl"
+feature_imputer_pkl: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/LGBM_Model/model_artifacts/feature_imputer.pkl"
+feature_cols_json: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/LGBM_Model/model_artifacts/feature_cols.json"
+cv_metrics_csv: "C:/Users/johan/Documents/Uni/Master_Tuebingen/Data_science_project/LGBM_Model/model_artifacts/cv_metrics.csv"

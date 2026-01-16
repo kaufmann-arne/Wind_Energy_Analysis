@@ -1,0 +1,10 @@
+cdsapi
+numpy
+pandas
+xarray
+netcdf4
+scipy
+pyyaml
+scikit-learn
+lightgbm==4.3.0
+joblib
