@@ -1,0 +1,9 @@
+# Example per-site configs for preprocessing
+# sites:
+#   turkey:
+#     input_dir: data/raw/scada/Scada_turkey
+#     output_dir: data/processed/scada_final
+#     timestamp_col: Date/Time
+#     windspeed_col: Wind Speed (m/s)
+#     target_col: LV ActivePower (kW)
+#     max_power_kw: 3600

@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+numpy
+pandas
+xarray
+netcdf4
+h5netcdf
+joblib
+scikit-learn==1.6.1
+lightgbm
