@@ -14,3 +14,7 @@ Thumbs.db
 
 # Secrets
 .env
+
+# Local overrides (machine-specific)
+config/paths.local.yaml
+config/paths.*.local.yaml

@@ -100,27 +100,115 @@ The backend performs:
 
 ## 5. Wind Energy Production Forecast
 
+This section describes how the web application estimates historical and future wind energy production at a user-selected location, and how the forecast is constructed and returned.
+
 ### 5.1 Data Sources
 
-- ERA5 reanalysis wind data
-- Turbine-specific power curves
-- Pre-trained machine learning model artifacts
+The forecast pipeline combines three main inputs:
+
+- **ERA5 reanalysis data (ECMWF)**  
+  Used to reconstruct historical wind conditions and derive climate features at the selected location. ERA5 is accessed as monthly NetCDF files.
+
+- **Turbine-specific power curves**  
+  Manufacturer power curves are used to translate hub-height wind speed into expected power/energy.
+
+- **Pre-trained ML model artifacts**  
+  A LightGBM-based correction-factor model trained on SCADA + ERA5 features. It predicts a **log correction factor** to adjust the physics-based energy estimate toward SCADA-realistic behavior. Artifacts include:
+  - `final_model.pkl`
+  - `feature_imputer.pkl`
+  - `feature_cols.json`
+  - `best_params.json`
+  - `cv_metrics.csv`
+
+**SCADA training data citations (used to train the correction model):**
+- Plumley, C. & Takeuchi, R. (2025). *Kelmarsh wind farm data*. Zenodo. doi:10.5281/zenodo.16807551.  
+- Plumley, C. & Takeuchi, R. (2025). *Penmanshiel wind farm data*. Zenodo. doi:10.5281/zenodo.16807304.  
+- Byrne, R., & MacArtain, P. (2022). *Vestas V52 Wind Turbine, 10-minute SCADA Data, 2006–2020 - Dundalk Institute of Technology, Ireland*. Mendeley Data, V2. doi:10.17632/tm988rs48k.2.  
+- Kaggle dataset: *3 x Vestas V100 2MW pitch power windspeed*. https://www.kaggle.com/datasets/morteneghj/3-x-vestas-v100-2mw-pitch-power-windspeed  
+
+---
 
 ### 5.2 Forecast Methodology
 
-For a given location, hub height, and turbine type:
-1. Historical wind conditions are sampled
-2. A representative monthly production path is generated
-3. Production is aligned to the **Commissioning Date (COD)**
-4. Monthly energy is scaled by the number of turbines
+For a given **location**, **hub height**, **turbine type**, **number of turbines**, and **Commissioning Date (COD)**, the application produces a **monthly energy production series** using a hybrid approach:
 
-Two modes are supported:
+1. **Derive wind and climate features**  
+   ERA5 variables are extracted for the selected location and transformed into the same feature set used during training (e.g., wind speed at relevant heights, direction from u/v, air density, roughness-related variables, seasonal/time features).
+
+2. **Compute baseline (physics-based) expected energy**  
+   Hub-height wind speed is mapped through the turbine power curve to obtain an expected power level. This provides a transparent baseline estimate.
+
+3. **Apply the ML correction factor**  
+   The ML model predicts a **log correction factor** for each time step / feature set. Energy is reconstructed as:
+
+   \[
+   E_{\text{corrected}} = E_{\text{baseline}} \cdot \exp(\widehat{\log cf})
+   \]
+
+   where:
+   - \(E_{\text{baseline}}\) is the power-curve-based estimate,
+   - \(\widehat{\log cf}\) is the model-predicted log correction factor.
+
+4. **Generate a long-horizon monthly forecast by resampling historical months**  
+   To forecast future production at monthly resolution, the application uses a lightweight Monte Carlo resampling approach:
+   - For each target calendar month (e.g., “January”), sample from historically observed/corrected January values.
+   - Repeat for all months across the forecast horizon to form one production path.
+
+5. **Align to COD and scale by turbine count**  
+   - The forecast timeline is aligned so that month 1 corresponds to the COD month (or the next full month, depending on implementation).
+   - Monthly energy is multiplied by the **number of turbines** .
+
+---
+
+### 5.3 Forecast Modes
+
+Two runtime modes are supported to balance latency and statistical stability:
 
 | Mode | Description |
-|----|------------|
-| Fast | Reduced sampling, faster response |
-| Precise | Higher resolution, more Monte-Carlo simulations |
+|------|-------------|
+| **Fast** | Reduced sampling / fewer Monte Carlo draws for a quick response suitable for interactive UI use. |
+| **Precise** | Higher sampling resolution and typically a longer historical reference window (20 years of ERA5-derived monthly values) for improved stability and better representation of interannual variability. |
 
+---
+
+### 5.4 Output Definition
+
+The forecast endpoint returns a **monthly time series** of energy production, including:
+
+- `timestamp` (month start or ISO month identifier)
+- `energy_kwh` (monthly total, scaled by turbine count)
+
+### 5.5 Reproducibility: Building Datasets and Training the Model
+
+This section documents the exact commands to reproduce the training pipeline used to generate the model artifacts consumed by the forecast service.
+
+#### 5.5.1 Run the full pipeline (recommended order)
+
+Run all commands from the repository root.
+
+```bash
+# 1) Download ERA5 (uses config/sites.yaml by default)
+python scripts/download_era5.py
+
+# 2) Preprocess SCADA for all sites
+#   - Download the SCADA datasets from the sources listed above.
+#   - Place the raw files under: Data/Raw/Scada/Scada_<Site>.
+#   - This step standardizes and aggregates the data and writes the final site-level CSVs to:
+#     Data/Processed/Scada_final/
+python scripts/run_scada_preprocess_sites.py
+
+# 3) Build ML datasets -> Data/ML/ (writes ml_dataset_*.csv and ml_dataset_ALL_T01.csv)
+python scripts/build_ml_datasets.py
+
+# 4) Validate the merged ML dataset (prints a validation report)
+python scripts/validate_ml.py Data/ML/ml_dataset_ALL_T01.csv --climate-prefix era5_
+
+# 5) python scripts/train_lgbm_louo.py \
+  --data-path Data/ML/ml_dataset_ALL_T01.csv \
+  --out-dir artifacts/model_artifacts \
+  --random-search \
+  --n-iter 30 \
+  --opt-metric rmse_energy_monthly_kwh
 ---
 
 ## 6. Financial Model
