@@ -1,7 +1,7 @@
 """Train the correction-factor model (LightGBM) with Leave-One-Turbine-Out CV.
 
 Supports optional Random Search:
-- optimize chosen metric over LOUO folds (default: rmse_logcf)
+- optimize chosen metric over LOUO folds
 - always trains target_log_correction_factor
 - reports energy metrics (hourly + monthly sums) when energy columns exist
 """
@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--random-state", type=int, default=42)
 
     p.add_argument("--random-search", action="store_true", help="Enable random search hyperparameter optimization.")
-    p.add_argument("--n-iter", type=int, default=25, help="Number of random search iterations (when enabled).")
+    p.add_argument("--n-iter", type=int, default=25, help="Number of random search iterations.")
     p.add_argument(
         "--opt-metric",
         type=str,
@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
             "rmse_energy_hourly_kwh",
             "rmse_energy_monthly_kwh",
         ],
-        help="Metric minimized during random search (when enabled).",
+        help="Metric minimized during random search .",
     )
     p.add_argument("--skip-energy-eval", action="store_true", help="Skip end-to-end energy evaluation.")
     return p.parse_args()
@@ -63,7 +63,7 @@ def main() -> None:
         valid_col=args.valid_col,
         target_col=args.target_col,
     )
-    # Default baseline params (used if random search is off)
+    # Default baseline params 
     base_params = dict(
         n_estimators=8000,        # early stopping in CV; final will use tuned n_estimators_final
         learning_rate=0.03,
@@ -88,7 +88,7 @@ def main() -> None:
             objective_agg="worst",
         )
 
-        # Use mean best_iteration from CV to set final n_estimators (slight buffer)
+        # Use mean best_iteration from CV to set final n_estimators 
         n_estimators_final = int(max(200, round(best_mean_best_it * 1.05)))
         model, imputer = train_final_model(
             df=df_all,
@@ -117,7 +117,6 @@ def main() -> None:
         print(f"Final n_estimators: {n_estimators_final}")
 
     else:
-        # No random search: train final directly with base params and fixed n_estimators
         model, imputer = train_final_model(
             df=df_all,
             feature_cols=feature_cols,
@@ -129,8 +128,6 @@ def main() -> None:
             n_estimators_final=4000,
         )
 
-        # For consistency, run a single CV table via random_search_louo with n_iter=1 using base params
-        # (This avoids duplicating CV code in the CLI.)
         from ml.training_lgbm import _run_louo_cv  # type: ignore
         train_df = df_all[df_all[args.valid_col].astype(bool)].copy()
         train_df = train_df[pd.notna(train_df[args.target_col])].copy()

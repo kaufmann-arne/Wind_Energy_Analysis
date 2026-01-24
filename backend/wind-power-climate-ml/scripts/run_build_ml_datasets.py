@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# --- make src importable when running as a script
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
@@ -86,12 +85,10 @@ def main() -> None:
             use_log_target=True,
         )
 
-        # Print what we got (same logic as notebook selecting T01)
         print("Built turbines:", list(datasets.keys())[:10], "..." if len(datasets) > 10 else "")
 
     # ---------------------------------------------------------
     # Merge all ml_dataset_*.csv -> ml_dataset_ALL_T01.csv
-    # (exactly like your notebook)
     # ---------------------------------------------------------
     csvs = sorted(ml_out_dir.glob("ml_dataset_*.csv"))
     if not csvs:

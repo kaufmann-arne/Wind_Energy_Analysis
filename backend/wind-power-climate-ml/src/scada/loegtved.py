@@ -44,15 +44,11 @@ def split_loegtved_txt_to_turbine_csvs(
 
     ts = df[timestamp_col].astype(str).str.strip()
     ts = ts.str.replace(r"\s+", " ", regex=True) 
-    # Wenn nur Datum vorhanden -> Zeit ergänzen
-    # erkennt sowohl "hh.mm.ss" als auch "hh:mm:ss" und auch einstelliges hh
     has_time = ts.str.contains(r"\b\d{1,2}[.:]\d{2}[.:]\d{2}\b", regex=True)
     ts = ts.where(has_time, ts + " 00.00.00")
 
-    # Zeitseparatoren vereinheitlichen: 00.10.00 -> 00:10:00 (auch 0.10.00)
     ts = ts.str.replace(r"\b(\d{1,2})\.(\d{2})\.(\d{2})\b", r"\1:\2:\3", regex=True)
 
-    # Optional (stabiler): explizites Format nach Normalisierung versuchen
     df[timestamp_col] = pd.to_datetime(ts, format="%d/%m/%Y %H:%M:%S", errors="coerce")
     df[timestamp_col] = (
         df[timestamp_col]
@@ -171,7 +167,7 @@ def aggregate_loegtved_park_hourly(
     - availability_fraction = available_turbines / n_turbines_total
     - is_available = availability_fraction >= threshold  (equiv. available_turbines >= ceil(threshold*n_turbines_total))
 
-    - park energy/wind are computed ONLY across available turbines (as mean, per your request)
+    - park energy/wind are computed ONLY across available turbines (as mean)
     """
 
     if n_turbines_total <= 0:

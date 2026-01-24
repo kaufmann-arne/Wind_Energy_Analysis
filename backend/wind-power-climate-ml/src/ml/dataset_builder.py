@@ -1,6 +1,6 @@
 """Build ML-ready datasets by merging SCADA with ERA5.
 
-This module is a direct modularization of your notebook code:
+This module does:
 - helper utilities for wind direction, power-law extrapolation, expected energy
 - cyclical time encodings
 - `build_ml_datasets_per_turbine(...)` that creates one dataset per turbine
@@ -104,7 +104,7 @@ def build_ml_datasets_per_turbine(
     Targets
     -------
     - target_correction_factor
-    - target_log_correction_factor (optional)
+    - target_log_correction_factor 
     - target_is_valid (training mask)
 
     Climate features are prefixed with `climate_prefix`.

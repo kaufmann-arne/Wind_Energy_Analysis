@@ -145,7 +145,7 @@ def _monthly_sum_metrics(
     y_true: np.ndarray,
     y_pred: np.ndarray,
     *,
-    min_hours_per_month: int = 24 * 28,
+    min_hours_per_month: int = 1,
 ) -> Tuple[float, float, float]:
     """
     Aggregate to monthly sums and compute metrics.
@@ -231,7 +231,7 @@ def _apply_lgb_defaults(params: Dict[str, Any], *, random_state: int) -> Dict[st
         "min_child_samples": 20,
         "min_split_gain": 0.0,
         "n_jobs": -1,
-        "verbosity": -1,          # unterdrückt "No further splits..." Spam
+        "verbosity": -1,          
         "random_state": random_state,
     }
 
@@ -266,7 +266,7 @@ def _run_louo_cv(
     ts_all_for_split = None
     if "timestamp" in train_df.columns:
         ts_all_for_split = pd.to_datetime(train_df["timestamp"], utc=True, errors="coerce")
-    # --- Energy arrays (für Reporting) ---
+    # --- Energy arrays ---
     has_energy = ("energy_kwh" in train_df.columns) and ("expected_energy_kwh" in train_df.columns) and ("timestamp" in train_df.columns)
     energy_true_all = train_df["energy_kwh"].astype(float).values if has_energy else None
     energy_exp_all = train_df["expected_energy_kwh"].astype(float).values if has_energy else None
@@ -378,7 +378,7 @@ def _run_louo_cv(
                     ts_te2,
                     e_true2,
                     pred_energy2,
-                    min_hours_per_month=24 * 28,
+                    min_hours_per_month=1,
                 )
             else:
                 rmse_e_h = mae_e_h = r2_e_h = float("nan")
@@ -658,7 +658,7 @@ def end_to_end_energy_eval(
         }
 
     rmse_h, mae_h, r2_h = _rmse_mae_r2(y_true2, pred_energy2)
-    rmse_m, mae_m, r2_m = _monthly_sum_metrics(ts2, y_true2, pred_energy2, min_hours_per_month=24 * 28)
+    rmse_m, mae_m, r2_m = _monthly_sum_metrics(ts2, y_true2, pred_energy2, min_hours_per_month=1)
 
     return {
         "rmse_energy_hourly_kwh": rmse_h,

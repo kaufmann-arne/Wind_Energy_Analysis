@@ -1,7 +1,5 @@
 """Generic SCADA preprocessing into a unified hourly dataset.
 
-This module contains the feature-complete version of your final `preprocess_scada_dataset`
-implementation, including:
 
 - Robust timestamp parsing
 - Automatic detection of temporal resolution (10-min vs hourly)
@@ -138,7 +136,6 @@ def preprocess_scada_dataset(
 
         if not (is_10min or is_hourly):
             # keep conservative behavior: allow, but warn via ValueError message
-            # (caller can decide to adjust thresholds)
             raise ValueError(
                 f"Could not classify temporal resolution for {file.name}. "
                 f"Median step: {median_minutes:.2f} minutes"
@@ -197,7 +194,7 @@ def preprocess_scada_dataset(
             # Sub-hourly: target is power (kW)
             df["power_kw"] = df[target_col]
 
-        # Wind speed (always required in your final design)
+        # Wind speed 
         if windspeed_col is None:
             raise ValueError("windspeed_col must be provided to derive availability")
         if windspeed_col not in df.columns:

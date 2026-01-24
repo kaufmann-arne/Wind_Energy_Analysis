@@ -1,12 +1,11 @@
 """SCADA + Status processing for Greenbyte-style exports.
 
-This module contains the functions you developed for:
+This module contains :
 - robust header detection in SCADA CSVs that start with commented metadata
 - minimal column loading
 - Greenbyte status export parsing and building a 10-minute availability mask
 - turbine-level hourly aggregation and park-level aggregation
 
-The functions are kept feature-equivalent to your notebook code.
 """
 
 from __future__ import annotations
@@ -161,7 +160,7 @@ def read_greenbyte_status_csv(
 def build_status_mask_10min(status_csv: str | Path, turbine_id: str) -> pd.DataFrame:
     """Build a 10-minute availability mask from status intervals.
 
-    Rule (as in your notebook): default available; only intervals with IEC category
+    Rule : default available; only intervals with IEC category
     != 'Full Performance' set availability to False.
     """
     df = read_greenbyte_status_csv(status_csv)
@@ -244,14 +243,14 @@ def load_turbine_timeseries(
 
     df = df_scada.merge(status_hourly, on="timestamp", how="left")
 
-    # Default missing status to False (unavailable)
+    # Default missing status to False 
     df["is_available"] = (
         df["is_available"]
         .astype("boolean")
         .fillna(False)
     )
 
-    # >>> NEW: keep only hours with enough valid 10-min SCADA frames
+    # keep only hours with enough valid 10-min SCADA frames
     df = df[df["n_valid_10min"] >= int(min_valid_10min_per_hour)].copy()
 
     return df.sort_values("timestamp")
@@ -285,14 +284,14 @@ def aggregate_park_hourly_fixed_denominator(
         .rename("available_turbines")
     )
 
-    # Optional diagnostics: how many turbines had data that hour (not used as denominator)
+    # Optional diagnostics: how many turbines had data that hour 
     with_data = (
         df.groupby("timestamp")["turbine_id"]
         .nunique()
         .rename("turbines_with_data")
     )
 
-    # Park means across AVAILABLE turbines only (as you want "mean")
+    # Park means across AVAILABLE turbines only 
     df_av = df[df["is_available"]].copy()
     park_vals = (
         df_av.groupby("timestamp")
