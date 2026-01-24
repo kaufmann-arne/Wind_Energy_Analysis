@@ -188,24 +188,26 @@ Run all commands from the repository root.
 pip install -r requirements.txt
 cd backend/wind-power-climate-ml
 pip install -e .
+
 # 1) Download ERA5 (uses config/sites.yaml by default)
 python scripts/download_era5.py
 
 # 2) Preprocess SCADA for all sites
 #   - Download the SCADA datasets from the sources listed above.
-#   - Place the raw files under: Data/Raw/Scada/Scada_<Site>.
+#   - Place the raw files under: data/raw/Scada/Scada_<Site>.
 #   - This step standardizes and aggregates the data and writes the final site-level CSVs to:
-#     Data/Processed/Scada_final/
+#     data/processed/Scada_final/
 python scripts/run_scada_preprocess_sites.py
 
-# 3) Build ML datasets -> Data/ML/ (writes ml_dataset_*.csv and ml_dataset_ALL_T01.csv)
+# 3) Build ML datasets -> data/mL/ (writes ml_dataset_*.csv and ml_dataset_ALL_T01.csv)
 python scripts/build_ml_datasets.py
 
 # 4) Validate the merged ML dataset (prints a validation report)
-python scripts/validate_ml.py Data/ML/ml_dataset_ALL_T01.csv --climate-prefix era5_
+python scripts/validate_ml.py data/ml/ml_dataset_ALL_T01.csv --climate-prefix era5_
 
-# 5) python scripts/train_lgbm_louo.py \
-  --data-path Data/ML/ml_dataset_ALL_T01.csv \
+# 5) Train model: 
+  python scripts/train_lgbm_louo.py \
+  --data-path data/ml/ml_dataset_ALL_T01.csv \
   --out-dir artifacts/model_artifacts \
   --random-search \
   --n-iter 30 \
