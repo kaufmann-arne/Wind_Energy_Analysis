@@ -141,13 +141,11 @@ For a given **location**, **hub height**, **turbine type**, **number of turbines
 3. **Apply the ML correction factor**  
    The ML model predicts a **log correction factor** for each time step / feature set. Energy is reconstructed as:
 
-   \[
-   E_{\text{corrected}} = E_{\text{baseline}} \cdot \exp(\widehat{\log cf})
-   \]
+   E_corrected = E_baseline * exp(log_cf_hat)
 
    where:
-   - \(E_{\text{baseline}}\) is the power-curve-based estimate,
-   - \(\widehat{\log cf}\) is the model-predicted log correction factor.
+   - E_baseline is the power-curve-based estimate,
+   - log_cf_hat is the model-predicted log correction factor.
 
 4. **Generate a long-horizon monthly forecast by resampling historical months**  
    To forecast future production at monthly resolution, the application uses a lightweight Monte Carlo resampling approach:
@@ -187,6 +185,9 @@ This section documents the exact commands to reproduce the training pipeline use
 Run all commands from the repository root.
 
 ```bash
+pip install -r requirements.txt
+cd backend/wind-power-climate-ml
+pip install -e .
 # 1) Download ERA5 (uses config/sites.yaml by default)
 python scripts/download_era5.py
 
@@ -209,6 +210,7 @@ python scripts/validate_ml.py Data/ML/ml_dataset_ALL_T01.csv --climate-prefix er
   --random-search \
   --n-iter 30 \
   --opt-metric rmse_energy_monthly_kwh
+```
 ---
 
 ## 6. Financial Model
