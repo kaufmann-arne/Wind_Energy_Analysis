@@ -185,7 +185,7 @@ This section documents the exact commands to reproduce the training pipeline use
 Run all commands from the repository root.
 
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 cd backend/wind-power-climate-ml
 pip install -e .
 
@@ -200,18 +200,13 @@ python scripts/download_era5.py
 python scripts/run_scada_preprocess_sites.py
 
 # 3) Build ML datasets -> data/mL/ (writes ml_dataset_*.csv and ml_dataset_ALL_T01.csv)
-python scripts/build_ml_datasets.py
+python scripts/run_build_ml_datasets.py
 
 # 4) Validate the merged ML dataset (prints a validation report)
 python scripts/validate_ml.py data/ml/ml_dataset_ALL_T01.csv --climate-prefix era5_
 
 # 5) Train model: 
-  python scripts/train_lgbm_louo.py \
-  --data-path data/ml/ml_dataset_ALL_T01.csv \
-  --out-dir artifacts/model_artifacts \
-  --random-search \
-  --n-iter 30 \
-  --opt-metric rmse_energy_monthly_kwh
+  python scripts/train_lgbm_louo.py --data-path data/ml/ml_dataset_ALL_T01.csv --out-dir artifacts/model_artifacts --random-search --n-iter 30 --opt-metric rmse_energy_monthly_kwh
 ```
 ---
 
